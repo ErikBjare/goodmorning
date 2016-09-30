@@ -125,7 +125,7 @@ def test_brightness_levels():
         sleep(1)
 
 
-def fade_brightness(time, fadeout=True):
+def fade_brightness(time, fadeout=False):
     """
     Fades in from lowest to highest during a total of the passed argument time.
     If argument fadein is set to False it will instead fade out from the highest to lowest.
@@ -134,14 +134,15 @@ def fade_brightness(time, fadeout=True):
     for i in range(BRIGHTNESS_LEVELS):
         if fadeout:
             i = (BRIGHTNESS_LEVELS - 1) - i
-        send_cmd(brightness(i))
+        brightness(i)
         sleep(step)
 
 
 if __name__ == "__main__":
     #blink(loop=False)
     #test_brightness_levels()
-    send_cmd(on(3))
-    send_cmd(hue(HUE_RED))
-    fade_brightness(15, fadein=False)
+    on(3)
+    hue(HUE_RED)
+    fade_brightness(15)
+    fade_brightness(15, fadeout=True)
 
