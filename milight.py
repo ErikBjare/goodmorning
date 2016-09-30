@@ -22,40 +22,56 @@ _BRIGHTNESS_ARRAY = list(range(0x02, 0x1C))
 
 BRIGHTNESS_LEVELS = len(_BRIGHTNESS_ARRAY)
 
-HUE_RED = 174;
-HUE_BLUE = 240;
+HUE_RED = 174
+HUE_BLUE = 240
 
-def _get_zone(zone):
+
+def _get_zone(zone) -> int:
     return _ZONE_ARRAY[zone]
 
-def _msg(b1, b2=0x00, b3=0x55):
+
+def _msg(b1, b2=0x00, b3=0x55) -> bytes:
     return bytes([b1, b2, b3])
+
 
 def _print_cmd(cmd):
     print(list(map(hex, cmd)))
 
-def on(zone):
+
+def _on(zone) -> bytes:
     msg = _msg(_get_zone(zone))
     return msg
 
-def off(zone):
+
+def _off(zone):
     if zone == 0:
         return _msg(0x41)
     else:
-        return _msg(_get_zone(zone)+1)
+        return _msg(_get_zone(zone) + 1)
 
-def hue(h):
+
+def _hue_msg(h) -> bytes:
     """h should be a value in the range 0-255"""
     return _msg(0x40, h)
 
-def brightness(b):
+
+def _brightness_msg(b):
     """b should be in range 0-19"""
     return _msg(0x4E, _BRIGHTNESS_ARRAY[b])
 
-def whitemode():
+
+def _whitemode_msg():
     return _msg(0xC2)
 
-def send_cmd(cmd):
+
+"""
+"
+"  Public API
+"
+"""
+
+
+def send_cmd(cmd: bytes):
     _print_cmd(cmd)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -64,6 +80,27 @@ def send_cmd(cmd):
 
     # Ensures that the call is respected, calling repeatedly without this may cause package loss
     sleep(0.5)
+
+
+def on(zone) -> None:
+    send_cmd(_on(zone))
+
+
+def off(zone):
+    send_cmd(_off(zone))
+
+
+def hue(h):
+    send_cmd(_hue_msg(h))
+
+
+def brightness(b):
+    send_cmd(_brightness_msg(b))
+
+
+def whitemode():
+    send_cmd(_whitemode_msg())
+
 
 def blink(loop=False):
     while True:
@@ -76,6 +113,7 @@ def blink(loop=False):
             break
         sleep(SLEEP_TIME)
 
+
 def test_brightness_levels():
     send_cmd(on(4))
     sleep(1)
@@ -86,15 +124,16 @@ def test_brightness_levels():
         send_cmd(brightness(b))
         sleep(1)
 
-def fade_brightness(time, fadein=True):
+
+def fade_brightness(time, fadeout=True):
     """
     Fades in from lowest to highest during a total of the passed argument time.
     If argument fadein is set to False it will instead fade out from the highest to lowest.
     """
-    step = time/BRIGHTNESS_LEVELS
+    step = time / BRIGHTNESS_LEVELS
     for i in range(BRIGHTNESS_LEVELS):
-        if not fadein:
-            i = (BRIGHTNESS_LEVELS-1) - i
+        if fadeout:
+            i = (BRIGHTNESS_LEVELS - 1) - i
         send_cmd(brightness(i))
         sleep(step)
 
