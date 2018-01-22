@@ -12,6 +12,10 @@ Usage:
 import socket
 from time import sleep
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Zones used for selecting and turning on lamps,
 # the array used for turning lamps off is similar (see `off()` function)
 _ZONE_ARRAY = [0x42, 0x45, 0x47, 0x49, 0x4B]
@@ -34,8 +38,8 @@ def _msg(b1, b2=0x00, b3=0x55) -> bytes:
     return bytes([b1, b2, b3])
 
 
-def _print_cmd(cmd):
-    print(list(map(hex, cmd)))
+def _repr_cmd(cmd):
+    return list(map(hex, cmd))
 
 
 def _on(zone) -> bytes:
@@ -72,7 +76,7 @@ def _whitemode_msg():
 
 
 def send_cmd(cmd: bytes):
-    _print_cmd(cmd)
+    logger.debug(_repr_cmd(cmd))
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -83,18 +87,22 @@ def send_cmd(cmd: bytes):
 
 
 def on(zone) -> None:
+    logger.info(f"Turning ON zone {zone}")
     send_cmd(_on(zone))
 
 
 def off(zone):
+    logger.info(f"Turning OFF zone {zone}")
     send_cmd(_off(zone))
 
 
 def hue(h):
+    logger.info(f"Setting hue {h}")
     send_cmd(_hue_msg(h))
 
 
 def brightness(b):
+    logger.info(f"Setting brightness {b}")
     send_cmd(_brightness_msg(b))
 
 
