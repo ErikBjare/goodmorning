@@ -11,7 +11,7 @@ MORNING_ZONE = 3
 
 
 def init():
-    logging.info("On and set min brightness")
+    logger.info("Initializing...")
     mi.on(MORNING_ZONE)
     mi.brightness(0)
     sleep(1)
@@ -77,8 +77,8 @@ if __name__ == "__main__":
             wait_until(next_time(morning_time))
             morning(testing=testing)
         else:
-            print("Waiting for evening")
+            logger.info("Waiting for evening")
             mi.on(MORNING_ZONE)
-            mi.brightness(19)
+            mi.brightness(25)
             wait_until(next_time(evening_time))
             evening()

@@ -138,6 +138,7 @@ def fade_brightness(time, fadeout=False):
     Fades in from lowest to highest during a total of the passed argument time.
     If argument fadein is set to False it will instead fade out from the highest to lowest.
     """
+    logger.info(f"Fading {'out' if fadeout else 'in'} for {time} seconds")
     step = time / BRIGHTNESS_LEVELS
     for i in range(BRIGHTNESS_LEVELS):
         if fadeout:
