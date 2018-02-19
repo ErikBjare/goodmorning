@@ -20,7 +20,6 @@ def init():
 
 def morning(testing=False):
     logger.info("Morning occurred")
-    logger.info("On, prepare for fade")
     mi.on(MORNING_ZONE)
     sleep(1)
     logger.info("Fade")
@@ -29,8 +28,8 @@ def morning(testing=False):
 
 def evening():
     logger.info("Evening occurred")
-    logger.info("Fading out")
     mi.fade_brightness(60*5, fadeout=True)
+    mi.off(MORNING_ZONE)
 
 
 def time_to_morning():
@@ -65,7 +64,7 @@ if __name__ == "__main__":
 
     init()
 
-    morning_time = time(hour=7, minute=00)
+    morning_time = time(hour=6, minute=30)
     evening_time = time(hour=18, minute=0)
 
     if testing:

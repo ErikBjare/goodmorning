@@ -22,7 +22,6 @@ _ZONE_ARRAY = [0x42, 0x45, 0x47, 0x49, 0x4B]
 
 # The values below 0x02 do nothing, values above 0x1B also do nothing
 _BRIGHTNESS_ARRAY = list(range(0x02, 0x1C))
-#assert len(_BRIGHTNESS_ARRAY) == 19
 
 BRIGHTNESS_LEVELS = len(_BRIGHTNESS_ARRAY)
 
@@ -38,8 +37,8 @@ def _msg(b1, b2=0x00, b3=0x55) -> bytes:
     return bytes([b1, b2, b3])
 
 
-def _repr_cmd(cmd):
-    return list(map(hex, cmd))
+def _repr_cmd(cmd) -> str:
+    return str(list(map(hex, cmd)))
 
 
 def _on(zone) -> bytes:
